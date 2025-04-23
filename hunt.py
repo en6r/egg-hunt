@@ -32,25 +32,27 @@ def clear_screen():
 def open_image(image_path, duration=2000):
     try:
         root = tk.Tk()
-        root.attributes('-topmost', True)
-        root.attributes('-fullscreen', True)         # Make fullscreen
-        root.overrideredirect(True)                  # Remove window decorations
 
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
 
-        # Load and scale image to fit screen while preserving aspect ratio
+        # calculate position to center the window
+        x = (screen_width - 1920) // 2
+        y = (screen_height - 1080) // 2
+
+        root.geometry(f"{1920}x{1080}+{x}+{y}")
+
+        # load image
         img = Image.open(image_path)
-        img.thumbnail((screen_width, screen_height), Image.LANCZOS)
+        img.thumbnail((1920 , 1080), Image.LANCZOS)
+
         tk_img = ImageTk.PhotoImage(img)
 
-        # Center image using padding
-        canvas = tk.Canvas(root, width=screen_width, height=screen_height, highlightthickness=0)
-        canvas.pack()
-        x = (screen_width - tk_img.width()) // 2
-        y = (screen_height - tk_img.height()) // 2
-        canvas.create_image(x, y, anchor='nw', image=tk_img)
+        # display image in a label
+        label = tk.Label(root, image=tk_img)
+        label.pack()
 
+        # automatically close window after duration
         root.after(duration, root.destroy)
         root.mainloop()
 
